@@ -1,22 +1,23 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
 import { App } from './app';
+import { routes } from './app.routes';
 
 describe('Aplicação', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [provideRouter(routes)],
     }).compileComponents();
   });
 
-  it('deve criar a aplicação', () => {
+  it('deve iniciar a aplicação com o layout e a página de pagamento', async () => {
     const fixture = TestBed.createComponent(App);
-    expect(fixture.componentInstance).toBeTruthy();
-  });
-
-  it('deve apresentar a página inicial', async () => {
-    const fixture = TestBed.createComponent(App);
+    await TestBed.inject(Router).navigateByUrl('/');
     await fixture.whenStable();
     const element = fixture.nativeElement as HTMLElement;
-    expect(element.querySelector('h1')?.textContent).toBe('Checkout');
+    expect(element.querySelector('header')?.textContent).toContain('Checkout');
+    expect(element.querySelector('main h1')?.textContent).toBe('Pagamento');
+    expect(element.querySelector('footer')?.textContent).toContain('Ambiente de demonstração.');
   });
 });

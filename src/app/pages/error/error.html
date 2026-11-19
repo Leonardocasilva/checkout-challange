@@ -1,0 +1,5 @@
+<section class="error-page" aria-labelledby="error-title">
+  <h1 id="error-title">Não foi possível concluir o pagamento</h1>
+  <p>{{ checkoutStore.paymentError()?.message }}</p>
+  <a routerLink="/pagamento" (click)="checkoutStore.resetCheckout()">Voltar ao pagamento</a>
+</section>

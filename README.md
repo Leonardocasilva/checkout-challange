@@ -5,6 +5,7 @@ Aplicação Angular para o desafio de checkout.
 ## Tecnologias
 
 - Angular e Angular CLI 22.3.0, com componentes standalone e TypeScript estrito.
+- NgRx SignalStore 22.0.1 para o estado compartilhado e RxJS 7.8.
 - SCSS puro, com seletores aninhados e classes em `kebab-case`.
 - Vitest para os testes unitários, integrado ao Angular CLI.
 - npm com `package-lock.json` versionado para reproduzir as dependências.
