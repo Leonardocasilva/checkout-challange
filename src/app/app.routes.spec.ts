@@ -92,6 +92,33 @@ describe('Rotas do checkout', () => {
     expect(router.url).toBe('/pagamento');
     expect(store.paymentError()).toBeNull();
     expect(store.hasFailedPayment()).toBe(false);
+    expect(store.selectedMethod()).toBe(PaymentMethod.Debit);
+    expect(harness.routeNativeElement?.querySelector<HTMLInputElement>('#card-number')?.value).toBe(
+      '',
+    );
+    expect(harness.routeNativeElement?.querySelector<HTMLInputElement>('#card-cvv')?.value).toBe(
+      '',
+    );
+  });
+
+  it('deve voltar sem seleção ao escolher outro meio e permitir a seleção de Pix', async () => {
+    store.selectPaymentMethod(PaymentMethod.Credit);
+    store.startPayment();
+    store.failPayment({ code: 'PAYMENT_DECLINED', message: 'Pagamento recusado.' });
+    await harness.navigateByUrl('/erro');
+    harness.routeNativeElement
+      ?.querySelector<HTMLAnchorElement>('.error-actions .secondary-button')!
+      .click();
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/pagamento?escolherMeio=true');
+    expect(store.selectedMethod()).toBeNull();
+    expect(store.paymentError()).toBeNull();
+    expect(harness.routeNativeElement?.querySelector('form.card-form')).toBeNull();
+    expect(harness.routeNativeElement?.querySelector('input:checked')).toBeNull();
+    harness.routeNativeElement?.querySelector<HTMLInputElement>('input[value="pix"]')!.click();
+    await harness.fixture.whenStable();
+    expect(store.selectedMethod()).toBe(PaymentMethod.Pix);
+    expect(harness.routeNativeElement?.querySelector('app-pix-payment')).not.toBeNull();
   });
 
   it('deve exibir o processamento e navegar para sucesso ao receber a aprovação', async () => {

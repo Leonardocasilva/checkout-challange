@@ -4,6 +4,7 @@
     @for (method of methods; track method.value) {
       <label class="method" [class.selected]="selected() === method.value">
         <input
+          #methodOption
           type="radio"
           name="payment-method"
           [value]="method.value"

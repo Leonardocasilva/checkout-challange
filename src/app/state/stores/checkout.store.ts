@@ -25,17 +25,31 @@ export const CheckoutStore = signalStore(
   withComputed((store) => ({
     product: computed(() => CHECKOUT_PRODUCT),
     paymentMethodDescription: computed(() => {
-      const payment = store.paymentSummary();
-      if (!payment) return '';
-      if (payment.method === PaymentMethod.Pix) return PAYMENT_METHOD_LABELS[PaymentMethod.Pix];
+      const error = store.paymentError();
+      const payment = store.paymentSummary() ?? error?.details;
+      const method = payment?.method ?? (error ? store.selectedMethod() : null);
+      if (!method) return '';
+      if (method === PaymentMethod.Pix) return PAYMENT_METHOD_LABELS[PaymentMethod.Pix];
 
       const card = [
-        payment.cardBrand,
-        payment.cardLastFourDigits ? `•••• ${payment.cardLastFourDigits}` : null,
+        payment?.cardBrand,
+        payment?.cardLastFourDigits ? `•••• ${payment.cardLastFourDigits}` : null,
       ]
         .filter(Boolean)
         .join(' ');
-      return [PAYMENT_METHOD_LABELS[payment.method], card].filter(Boolean).join(' · ');
+      return [PAYMENT_METHOD_LABELS[method], card].filter(Boolean).join(' · ');
+    }),
+    failedPaymentDetails: computed(() => {
+      const error = store.paymentError();
+      const method = store.selectedMethod();
+      if (!error || !method) return null;
+      return (
+        error.details ?? {
+          product: CHECKOUT_PRODUCT,
+          method,
+          amountInCents: CHECKOUT_PRODUCT.priceInCents,
+        }
+      );
     }),
     isProcessing: computed(() => store.paymentStatus() === PaymentStatus.Processing),
     hasSuccessfulPayment: computed(
@@ -113,6 +127,7 @@ export const CheckoutStore = signalStore(
                       typeof knownError?.message === 'string'
                         ? knownError.message
                         : 'Não foi possível processar o pagamento. Tente novamente.',
+                    ...(knownError?.details ? { details: knownError.details } : {}),
                   });
                 },
               }),

@@ -1,18 +1,126 @@
+:host {
+  display: block;
+}
+
 .error-page {
+  max-width: 41rem;
+  margin: 2.5rem auto 0;
+  text-align: center;
+
+  .error-card {
+    padding: 2.25rem;
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .error-mark {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    background: var(--danger-soft);
+    color: var(--danger);
+    font-size: 1.875rem;
+  }
   h1 {
-    margin: 0 0 0.75rem;
+    margin-bottom: 0.875rem;
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.3;
+    &:focus {
+      outline: none;
+    }
+  }
+  .error-description {
+    color: var(--muted);
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+  .error-reason {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin: 1.75rem 0;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: var(--danger-soft);
+    color: var(--danger);
+    text-align: left;
+    > app-icon {
+      margin-top: 0.125rem;
+    }
+    h2 {
+      margin-bottom: 0.3rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    p {
+      font-size: 0.8125rem;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+  }
+  .error-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    a {
+      text-decoration: none;
+    }
+  }
+  .retry-hint {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+    line-height: 1.7;
+  }
+  .help-note {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 2rem;
+    color: var(--primary);
+    font-size: 0.8125rem;
   }
 
-  p {
-    margin: 0 0 1.5rem;
+  @media (max-width: 35.99rem) {
+    margin-top: 0.5rem;
+    .error-card {
+      padding: 1.75rem 1.25rem;
+      border-radius: 1rem;
+    }
+    .error-mark {
+      width: 4rem;
+      height: 4rem;
+      margin-bottom: 1.25rem;
+    }
+    h1 {
+      max-width: 16rem;
+      margin-right: auto;
+      margin-left: auto;
+      font-size: 1.5rem;
+    }
+    .error-actions {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .help-note {
+      align-items: flex-start;
+      margin-top: 1.75rem;
+      > app-icon {
+        margin-top: 0.15rem;
+      }
+    }
   }
-
-  a {
-    display: inline-block;
-    text-underline-offset: 0.2em;
-
-    &:hover {
-      text-decoration-thickness: 2px;
+  @media (max-width: 22rem) {
+    .error-card {
+      padding-right: 1rem;
+      padding-left: 1rem;
     }
   }
 }

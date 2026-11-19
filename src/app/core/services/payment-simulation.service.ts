@@ -20,15 +20,17 @@ export class PaymentSimulationService {
       const number =
         request.method === PaymentMethod.Pix ? null : normalizeCardNumber(request.card.number);
       const declined = number === '4000000000000002';
-      const payment = {
+      const customerFirstName =
+        request.method === PaymentMethod.Pix
+          ? undefined
+          : request.card.holder.trim().split(/\s+/)[0];
+      const details = {
         product: CHECKOUT_PRODUCT,
         method: request.method,
         amountInCents: CHECKOUT_PRODUCT.priceInCents,
+        orderId: `NX-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
         ...(number ? { cardLastFourDigits: number.slice(-4) } : {}),
         ...(number?.startsWith('4') ? { cardBrand: 'Visa' as const } : {}),
-        ...(request.method !== PaymentMethod.Pix
-          ? { customerFirstName: request.card.holder.trim().split(/\s+/)[0] }
-          : {}),
       };
 
       return timer(1600).pipe(
@@ -36,7 +38,9 @@ export class PaymentSimulationService {
           if (declined) {
             throw {
               code: 'PAYMENT_DECLINED',
-              message: 'Cartão não autorizado. Tente novamente com outro cartão ou escolha Pix.',
+              message:
+                'Seu banco recusou esta transação. Confira os dados e o limite disponível ou use outro meio de pagamento.',
+              details,
             };
           }
           const paidAt = new Date();
@@ -50,8 +54,8 @@ export class PaymentSimulationService {
           nextBillingAt.setDate(Math.min(paidAt.getDate(), lastDay));
 
           return {
-            ...payment,
-            orderId: `NX-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
+            ...details,
+            ...(customerFirstName ? { customerFirstName } : {}),
             paidAt: paidAt.toISOString(),
             nextBillingAt: nextBillingAt.toISOString(),
           };

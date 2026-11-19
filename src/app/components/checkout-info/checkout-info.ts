@@ -8,6 +8,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 })
 export class CheckoutInfo {
   readonly topic = input.required<'help' | 'privacy' | 'terms'>();
+  readonly label = input<string>();
   readonly content = {
     help: {
       label: 'Precisa de ajuda?',

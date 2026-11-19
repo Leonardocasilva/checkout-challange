@@ -1,0 +1,38 @@
+<section
+  class="payment-summary"
+  [attr.aria-label]="
+    approved() ? 'Resumo do pagamento aprovado' : 'Resumo da tentativa de pagamento'
+  "
+>
+  <div class="product-identity">
+    <span class="product-mark"><app-icon name="product" /></span>
+    <div>
+      <h2>{{ payment().product.name }}</h2>
+      <p>{{ payment().product.description }}</p>
+    </div>
+  </div>
+  <dl class="payment-details">
+    @if (payment().orderId; as orderId) {
+      <div>
+        <dt>Pedido</dt>
+        <dd>#{{ orderId }}</dd>
+      </div>
+    }
+    <div>
+      <dt>{{ approved() ? 'Pagamento' : 'Meio usado' }}</dt>
+      <dd>{{ methodDescription() }}</dd>
+    </div>
+    @if (approved() && paidAtLabel()) {
+      <div>
+        <dt>Data</dt>
+        <dd>
+          <time [attr.datetime]="paidAt()">{{ paidAtLabel() }}</time>
+        </dd>
+      </div>
+    }
+    <div class="total">
+      <dt>{{ approved() ? 'Total pago' : 'Total a pagar' }}</dt>
+      <dd>{{ payment().amountInCents | price }}</dd>
+    </div>
+  </dl>
+</section>
