@@ -1,0 +1,106 @@
+<form
+  class="card-form"
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+  novalidate
+  aria-labelledby="card-title"
+>
+  <div class="form-heading">
+    <h2 id="card-title">Cartão de {{ method() === PaymentMethod.Debit ? 'débito' : 'crédito' }}</h2>
+    @if (form.controls.number.value.startsWith('4')) {
+      <span class="card-brand" aria-label="Visa">VISA</span>
+    }
+  </div>
+
+  <div class="field" [class.invalid]="error('number')">
+    <label for="card-number">Número do cartão</label>
+    <div class="input-wrap">
+      <app-icon name="card" />
+      <input
+        id="card-number"
+        formControlName="number"
+        inputmode="numeric"
+        autocomplete="cc-number"
+        placeholder="0000 0000 0000 0000"
+        maxlength="25"
+        (blur)="formatNumber()"
+        [attr.aria-invalid]="!!error('number')"
+        [attr.aria-describedby]="error('number') ? 'number-error' : null"
+      />
+    </div>
+    @if (error('number'); as message) {
+      <p class="field-error" id="number-error"><app-icon name="info" />{{ message }}</p>
+    }
+  </div>
+
+  <div class="field" [class.invalid]="error('holder')">
+    <label for="card-holder">Nome no cartão</label>
+    <input
+      id="card-holder"
+      formControlName="holder"
+      autocomplete="cc-name"
+      placeholder="Nome completo"
+      maxlength="80"
+      [attr.aria-invalid]="!!error('holder')"
+      [attr.aria-describedby]="error('holder') ? 'holder-error' : null"
+    />
+    @if (error('holder'); as message) {
+      <p class="field-error" id="holder-error"><app-icon name="info" />{{ message }}</p>
+    }
+  </div>
+
+  <div class="field-row">
+    <div class="field" [class.invalid]="error('expiry')">
+      <label for="card-expiry">Validade</label>
+      <input
+        id="card-expiry"
+        formControlName="expiry"
+        inputmode="numeric"
+        autocomplete="cc-exp"
+        placeholder="MM/AA"
+        maxlength="5"
+        (blur)="formatExpiry()"
+        [attr.aria-invalid]="!!error('expiry')"
+        [attr.aria-describedby]="error('expiry') ? 'expiry-error' : null"
+      />
+      @if (error('expiry'); as message) {
+        <p class="field-error" id="expiry-error"><app-icon name="info" />{{ message }}</p>
+      }
+    </div>
+    <div class="field" [class.invalid]="error('cvv')">
+      <label for="card-cvv">CVV</label>
+      <div class="input-wrap">
+        <app-icon name="lock" />
+        <input
+          id="card-cvv"
+          formControlName="cvv"
+          type="password"
+          inputmode="numeric"
+          autocomplete="cc-csc"
+          placeholder="•••"
+          maxlength="4"
+          [attr.aria-invalid]="!!error('cvv')"
+          [attr.aria-describedby]="error('cvv') ? 'cvv-error' : null"
+        />
+      </div>
+      @if (error('cvv'); as message) {
+        <p class="field-error" id="cvv-error"><app-icon name="info" />{{ message }}</p>
+      }
+    </div>
+  </div>
+
+  <div class="form-feedback" aria-live="polite">
+    @if (form.valid) {
+      <p class="valid-message"><app-icon name="check" />Dados do cartão preenchidos</p>
+    } @else {
+      <p>Preencha os dados do cartão para continuar.</p>
+    }
+  </div>
+  <button class="primary-button" type="submit" [disabled]="form.invalid">
+    <app-icon name="lock" />Pagar {{ amount() | price }}
+  </button>
+  <p class="terms-note">
+    Ao continuar, você concorda com os <app-checkout-info topic="terms" /> e a
+    <app-checkout-info topic="privacy" />.
+  </p>
+</form>

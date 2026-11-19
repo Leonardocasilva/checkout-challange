@@ -34,3 +34,14 @@ npm test -- --watch=false
 ```
 
 A compilação de produção é gerada em `dist/checkout-challange/browser`. Para desenvolver com testes em modo contínuo, execute `npm test`.
+
+Para verificar a simulação em `/pagamento`, use apenas dados fictícios:
+
+| Cenário                    | Dados                                                                            | Resultado                                                       |
+| -------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Crédito ou débito aprovado | Número `4242 4242 4242 4242`, nome `Marina Almeida`, validade futura e CVV `123` | Processamento e redirecionamento para `/sucesso`                |
+| Cartão recusado            | Número `4000 0000 0000 0002`, nome, validade futura e CVV válidos                | Redirecionamento para `/erro`, com opção de voltar ao pagamento |
+| Pix                        | Escolha Pix, copie o código se desejar e clique em concluir                      | Processamento e redirecionamento para `/sucesso`                |
+| Dados inválidos            | Número incorreto, nome vazio, validade vencida ou CVV incompleto                 | Mensagens nos campos e envio bloqueado                          |
+
+O código e o QR Code de Pix são demonstrativos e não realizam pagamentos. A simulação leva aproximadamente 1,6 segundo. Recarregar `/sucesso` ou `/erro` descarta o estado em memória e retorna ao pagamento.

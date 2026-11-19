@@ -1,0 +1,58 @@
+:host {
+  display: block;
+}
+
+.pix-payment {
+  h2 {
+    margin-bottom: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  > p {
+    color: var(--muted);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+  }
+  figure {
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+  img {
+    display: block;
+    margin: 0 auto 0.75rem;
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: white;
+  }
+  figcaption {
+    color: var(--muted);
+    font-size: 0.6875rem;
+  }
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.8125rem;
+  }
+  input {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 0.5rem;
+    padding: 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--background);
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.75rem;
+  }
+  .secondary-button app-icon {
+    color: var(--primary);
+  }
+  .copy-feedback {
+    min-height: 2.5rem;
+    padding-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+}

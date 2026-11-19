@@ -1,8 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { PaymentSimulationService } from '@core/services/payment-simulation.service';
+import { CHECKOUT_PRODUCT } from '@shared/constants/checkout';
 import { PaymentMethod } from '@shared/enums/PaymentMethod';
+import { IPaymentSummary } from '@shared/interfaces/IPaymentSummary';
 import { CheckoutStore } from '@state/stores/checkout.store';
+import { Subject } from 'rxjs';
 import { routes } from './app.routes';
 
 describe('Rotas do checkout', () => {
@@ -23,7 +27,9 @@ describe('Rotas do checkout', () => {
       await harness.navigateByUrl(url);
 
       expect(router.url).toBe('/pagamento');
-      expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Pagamento');
+      expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe(
+        'Finalize sua assinatura',
+      );
     },
   );
 
@@ -83,5 +89,38 @@ describe('Rotas do checkout', () => {
     expect(router.url).toBe('/pagamento');
     expect(store.paymentError()).toBeNull();
     expect(store.hasFailedPayment()).toBe(false);
+  });
+
+  it('deve exibir o processamento e navegar para sucesso ao receber a aprovação', async () => {
+    const response = new Subject<IPaymentSummary>();
+    vi.spyOn(TestBed.inject(PaymentSimulationService), 'process').mockReturnValue(response);
+    await harness.navigateByUrl('/pagamento');
+    store.selectPaymentMethod(PaymentMethod.Pix);
+    store.processPayment({ method: PaymentMethod.Pix });
+    await harness.fixture.whenStable();
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe(
+      'Processando seu pagamento',
+    );
+    expect(harness.routeNativeElement?.querySelector('form.card-form')).toBeNull();
+    response.next({ product: CHECKOUT_PRODUCT, method: PaymentMethod.Pix, amountInCents: 7990 });
+    response.complete();
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/sucesso');
+    expect(store.paymentSummary()?.amountInCents).toBe(7990);
+  });
+
+  it('deve navegar para erro após recusa e permitir uma nova seleção no retorno', async () => {
+    const response = new Subject<IPaymentSummary>();
+    vi.spyOn(TestBed.inject(PaymentSimulationService), 'process').mockReturnValue(response);
+    await harness.navigateByUrl('/pagamento');
+    store.selectPaymentMethod(PaymentMethod.Pix);
+    store.processPayment({ method: PaymentMethod.Pix });
+    response.error({ code: 'PAYMENT_DECLINED', message: 'Pagamento recusado.' });
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/erro');
+    await harness.navigateByUrl('/pagamento');
+    store.selectPaymentMethod(PaymentMethod.Debit);
+    expect(store.hasFailedPayment()).toBe(false);
+    expect(store.selectedMethod()).toBe(PaymentMethod.Debit);
   });
 });

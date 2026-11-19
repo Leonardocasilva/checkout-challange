@@ -17,7 +17,7 @@ describe('Aplicação', () => {
     await fixture.whenStable();
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('header')?.textContent).toContain('Checkout');
-    expect(element.querySelector('main h1')?.textContent).toBe('Pagamento');
-    expect(element.querySelector('footer')?.textContent).toContain('Ambiente de demonstração.');
+    expect(element.querySelector('main h1')?.textContent).toBe('Finalize sua assinatura');
+    expect(element.querySelector('footer')?.textContent).toContain('© 2026 Nexo.');
   });
 });

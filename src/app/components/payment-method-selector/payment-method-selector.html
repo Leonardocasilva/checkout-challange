@@ -1,0 +1,18 @@
+<fieldset class="payment-methods">
+  <legend>Como você quer pagar?</legend>
+  <div class="options">
+    @for (method of methods; track method.value) {
+      <label class="method" [class.selected]="selected() === method.value">
+        <input
+          type="radio"
+          name="payment-method"
+          [value]="method.value"
+          [checked]="selected() === method.value"
+          (change)="methodChange.emit(method.value)"
+        />
+        <app-icon [name]="method.icon" />
+        <span>{{ labels[method.value] }}</span>
+      </label>
+    }
+  </div>
+</fieldset>
