@@ -45,6 +45,9 @@ describe('Rotas do checkout', () => {
       },
       method: PaymentMethod.Pix,
       amountInCents: 7990,
+      orderId: 'NX-10482',
+      paidAt: new Date(2030, 10, 19, 14, 32).toISOString(),
+      nextBillingAt: new Date(2030, 11, 19, 14, 32).toISOString(),
     });
 
     await harness.navigateByUrl('/sucesso');
@@ -102,7 +105,14 @@ describe('Rotas do checkout', () => {
       'Processando seu pagamento',
     );
     expect(harness.routeNativeElement?.querySelector('form.card-form')).toBeNull();
-    response.next({ product: CHECKOUT_PRODUCT, method: PaymentMethod.Pix, amountInCents: 7990 });
+    response.next({
+      product: CHECKOUT_PRODUCT,
+      method: PaymentMethod.Pix,
+      amountInCents: 7990,
+      orderId: 'NX-10482',
+      paidAt: new Date(2030, 10, 19, 14, 32).toISOString(),
+      nextBillingAt: new Date(2030, 11, 19, 14, 32).toISOString(),
+    });
     response.complete();
     await harness.fixture.whenStable();
     expect(router.url).toBe('/sucesso');

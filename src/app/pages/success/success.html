@@ -1,4 +1,58 @@
-<section class="success-page" aria-labelledby="success-title">
-  <h1 id="success-title">Pagamento confirmado!</h1>
-  <p>Seu pagamento foi concluído.</p>
-</section>
+@if (store.paymentSummary(); as payment) {
+  <div class="success-page">
+    <section class="confirmation-card" aria-labelledby="success-title">
+      <span class="success-mark"><app-icon name="check-circle" /></span>
+      <h1 #heading id="success-title" tabindex="-1">Pagamento confirmado!</h1>
+      <p class="confirmation-message">
+        Tudo certo{{ firstName() ? ', ' + firstName() : '' }}. Sua assinatura está ativa e seu
+        espaço já está pronto para você.
+      </p>
+      <span class="subscription-status"><app-icon name="check" />Assinatura ativa</span>
+
+      <app-payment-receipt
+        [payment]="payment"
+        [methodDescription]="store.paymentMethodDescription()"
+      />
+
+      <p class="receipt-note">
+        Seu recibo está disponível<strong>Consulte os detalhes do pagamento abaixo.</strong>
+      </p>
+      <div class="confirmation-actions">
+        <button class="primary-button" type="button" (click)="workspaceDialog.showModal()">
+          <app-icon name="arrow" />Acessar meu espaço
+        </button>
+        <button class="secondary-button" type="button" (click)="receiptDialog.showModal()">
+          <app-icon name="receipt" />Ver recibo
+        </button>
+      </div>
+    </section>
+    <p class="renewal-note">
+      Sua próxima renovação será em
+      <time [attr.datetime]="payment.nextBillingAt">{{ nextBillingDate() }}</time>.
+    </p>
+
+    <dialog #receiptDialog class="success-dialog receipt-dialog" aria-labelledby="receipt-title">
+      <h2 id="receipt-title" tabindex="-1" autofocus>Recibo do pagamento</h2>
+      <p class="dialog-description">Comprovante demonstrativo. Nenhuma cobrança foi realizada.</p>
+      <app-payment-receipt
+        [payment]="payment"
+        [methodDescription]="store.paymentMethodDescription()"
+      />
+      <button class="primary-button" type="button" (click)="receiptDialog.close()">
+        Fechar recibo
+      </button>
+    </dialog>
+
+    <dialog #workspaceDialog class="success-dialog" aria-labelledby="workspace-title">
+      <span class="workspace-mark"><app-icon name="product" /></span>
+      <h2 id="workspace-title">Seu espaço {{ payment.product.name }}</h2>
+      <p class="dialog-description">
+        Sua assinatura foi confirmada nesta simulação. O acesso à área de assinante faz parte do
+        produto real e não está disponível nesta demonstração.
+      </p>
+      <button class="primary-button" type="button" autofocus (click)="workspaceDialog.close()">
+        Voltar à confirmação
+      </button>
+    </dialog>
+  </div>
+}

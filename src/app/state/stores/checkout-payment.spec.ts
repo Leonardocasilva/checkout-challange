@@ -10,6 +10,9 @@ const summary: IPaymentSummary = {
   product: CHECKOUT_PRODUCT,
   method: PaymentMethod.Pix,
   amountInCents: 7990,
+  orderId: 'NX-10482',
+  paidAt: new Date(2030, 10, 19, 14, 32).toISOString(),
+  nextBillingAt: new Date(2030, 11, 19, 14, 32).toISOString(),
 };
 const request = { method: PaymentMethod.Pix } as const;
 

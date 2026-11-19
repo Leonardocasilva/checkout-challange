@@ -20,11 +20,15 @@ export class PaymentSimulationService {
       const number =
         request.method === PaymentMethod.Pix ? null : normalizeCardNumber(request.card.number);
       const declined = number === '4000000000000002';
-      const summary: IPaymentSummary = {
+      const payment = {
         product: CHECKOUT_PRODUCT,
         method: request.method,
         amountInCents: CHECKOUT_PRODUCT.priceInCents,
         ...(number ? { cardLastFourDigits: number.slice(-4) } : {}),
+        ...(number?.startsWith('4') ? { cardBrand: 'Visa' as const } : {}),
+        ...(request.method !== PaymentMethod.Pix
+          ? { customerFirstName: request.card.holder.trim().split(/\s+/)[0] }
+          : {}),
       };
 
       return timer(1600).pipe(
@@ -35,7 +39,22 @@ export class PaymentSimulationService {
               message: 'Cartão não autorizado. Tente novamente com outro cartão ou escolha Pix.',
             };
           }
-          return summary;
+          const paidAt = new Date();
+          const nextBillingAt = new Date(paidAt);
+          nextBillingAt.setMonth(nextBillingAt.getMonth() + 1, 1);
+          const lastDay = new Date(
+            nextBillingAt.getFullYear(),
+            nextBillingAt.getMonth() + 1,
+            0,
+          ).getDate();
+          nextBillingAt.setDate(Math.min(paidAt.getDate(), lastDay));
+
+          return {
+            ...payment,
+            orderId: `NX-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
+            paidAt: paidAt.toISOString(),
+            nextBillingAt: nextBillingAt.toISOString(),
+          };
         }),
       );
     });
