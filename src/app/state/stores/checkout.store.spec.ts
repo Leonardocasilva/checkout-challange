@@ -8,6 +8,9 @@ const summary: IPaymentSummary = {
   product: { id: 'nexo-pro', name: 'Nexo Pro', description: 'Plano mensal', priceInCents: 7990 },
   method: PaymentMethod.Pix,
   amountInCents: 7990,
+  orderId: 'NX-10482',
+  paidAt: new Date(2030, 10, 19, 14, 32).toISOString(),
+  nextBillingAt: new Date(2030, 11, 19, 14, 32).toISOString(),
 };
 const error = { code: 'PAYMENT_DECLINED', message: 'Pagamento não autorizado.' };
 
@@ -100,5 +103,31 @@ describe('Estado do checkout', () => {
     expect(store.paymentError()).toBeNull();
     expect(store.hasSuccessfulPayment()).toBe(false);
     expect(store.hasFailedPayment()).toBe(false);
+  });
+
+  it('deve descrever o meio aprovado com dados mascarados e limpar a descrição no reinício', () => {
+    expect(store.paymentMethodDescription()).toBe('');
+    store.selectPaymentMethod(PaymentMethod.Credit);
+    store.startPayment();
+    store.completePayment({
+      ...summary,
+      method: PaymentMethod.Credit,
+      cardBrand: 'Visa',
+      cardLastFourDigits: '4242',
+    });
+    expect(store.paymentMethodDescription()).toBe('Crédito · Visa •••• 4242');
+    store.resetCheckout();
+    expect(store.paymentMethodDescription()).toBe('');
+  });
+
+  it('deve omitir dados de cartão para Pix e tratar bandeira ausente no débito', () => {
+    store.selectPaymentMethod(PaymentMethod.Pix);
+    store.startPayment();
+    store.completePayment({ ...summary, cardBrand: 'Visa', cardLastFourDigits: '4242' });
+    expect(store.paymentMethodDescription()).toBe('Pix');
+    store.selectPaymentMethod(PaymentMethod.Debit);
+    store.startPayment();
+    store.completePayment({ ...summary, method: PaymentMethod.Debit, cardLastFourDigits: '0005' });
+    expect(store.paymentMethodDescription()).toBe('Débito · •••• 0005');
   });
 });

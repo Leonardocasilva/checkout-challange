@@ -1,7 +1,18 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 export type IconName =
-  'brand' | 'product' | 'card' | 'pix' | 'lock' | 'shield' | 'check' | 'copy' | 'info' | 'arrow';
+  | 'brand'
+  | 'product'
+  | 'card'
+  | 'pix'
+  | 'lock'
+  | 'shield'
+  | 'check'
+  | 'copy'
+  | 'info'
+  | 'arrow'
+  | 'check-circle'
+  | 'receipt';
 
 @Component({
   selector: 'app-icon',

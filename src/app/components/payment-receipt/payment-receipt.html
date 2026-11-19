@@ -1,0 +1,29 @@
+<section class="payment-receipt" aria-label="Resumo do pagamento aprovado">
+  <div class="product-identity">
+    <span class="product-mark"><app-icon name="product" /></span>
+    <div>
+      <h2>{{ payment().product.name }}</h2>
+      <p>{{ payment().product.description }}</p>
+    </div>
+  </div>
+  <dl class="payment-details">
+    <div>
+      <dt>Pedido</dt>
+      <dd>#{{ payment().orderId }}</dd>
+    </div>
+    <div>
+      <dt>Pagamento</dt>
+      <dd>{{ methodDescription() }}</dd>
+    </div>
+    <div>
+      <dt>Data</dt>
+      <dd>
+        <time [attr.datetime]="payment().paidAt">{{ paidAt() }}</time>
+      </dd>
+    </div>
+    <div class="total">
+      <dt>Total pago</dt>
+      <dd>{{ payment().amountInCents | price }}</dd>
+    </div>
+  </dl>
+</section>

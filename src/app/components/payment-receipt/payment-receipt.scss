@@ -1,0 +1,79 @@
+:host {
+  display: block;
+}
+
+.payment-receipt {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: #fafafe;
+  text-align: left;
+
+  .product-identity {
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .product-mark {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.5rem;
+    font-size: 1.25rem;
+  }
+  .payment-details {
+    margin: 1.25rem 0 0;
+    font-size: 0.875rem;
+
+    > div {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+    dt {
+      flex: 0 0 auto;
+      color: var(--muted);
+    }
+    dd {
+      min-width: 0;
+      margin: 0;
+      text-align: right;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+    .total {
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+    .total dt {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .total dd {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 35.99rem) {
+    padding: 1.25rem;
+    .payment-details {
+      font-size: 0.8125rem;
+      > div {
+        gap: 0.75rem;
+      }
+    }
+  }
+  @media (max-width: 22rem) {
+    padding: 1rem;
+    .payment-details > div {
+      gap: 0.5rem;
+    }
+    .payment-details .total dd {
+      font-size: 1.375rem;
+    }
+  }
+}

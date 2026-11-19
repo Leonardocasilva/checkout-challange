@@ -53,4 +53,35 @@ describe('Simulação do pagamento', () => {
     );
     expect(await result).not.toHaveProperty('cardLastFourDigits');
   });
+
+  it('deve registrar o pedido e a data somente ao concluir a aprovação', async () => {
+    const result = firstValueFrom(service.process({ method: PaymentMethod.Credit, card }));
+    vi.advanceTimersByTime(1600);
+    const payment = await result;
+    expect(payment.orderId).toMatch(/^NX-[A-F0-9]{8}$/);
+    expect(payment.paidAt).toBe(new Date(2030, 10, 19, 0, 0, 1, 600).toISOString());
+    expect(payment.nextBillingAt).toBe(new Date(2030, 11, 19, 0, 0, 1, 600).toISOString());
+    expect(payment.customerFirstName).toBe('Marina');
+    expect(payment.cardBrand).toBe('Visa');
+    expect(JSON.stringify(payment)).not.toContain(card.holder);
+  });
+
+  it.each([
+    { year: 2030, month: 0, day: 31, nextYear: 2030, nextMonth: 1, nextDay: 28 },
+    { year: 2032, month: 0, day: 31, nextYear: 2032, nextMonth: 1, nextDay: 29 },
+    { year: 2030, month: 11, day: 31, nextYear: 2031, nextMonth: 0, nextDay: 31 },
+  ])(
+    'deve ajustar a renovação mensal para $nextDay no mês seguinte a $day/$month/$year',
+    async ({ year, month, day, nextYear, nextMonth, nextDay }) => {
+      vi.setSystemTime(new Date(year, month, day, 12));
+      const result = firstValueFrom(service.process({ method: PaymentMethod.Pix }));
+      vi.advanceTimersByTime(1600);
+      const payment = await result;
+      expect(payment.nextBillingAt).toBe(
+        new Date(nextYear, nextMonth, nextDay, 12, 0, 1, 600).toISOString(),
+      );
+      expect(payment.customerFirstName).toBeUndefined();
+      expect(payment.cardBrand).toBeUndefined();
+    },
+  );
 });

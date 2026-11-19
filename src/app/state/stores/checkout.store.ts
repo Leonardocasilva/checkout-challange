@@ -3,7 +3,7 @@ import { PaymentSimulationService } from '@core/services/payment-simulation.serv
 import { tapResponse } from '@ngrx/operators';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { CHECKOUT_PRODUCT } from '@shared/constants/checkout';
+import { CHECKOUT_PRODUCT, PAYMENT_METHOD_LABELS } from '@shared/constants/checkout';
 import { PaymentMethod } from '@shared/enums/PaymentMethod';
 import { PaymentStatus } from '@shared/enums/PaymentStatus';
 import { ICheckoutState } from '@shared/interfaces/ICheckoutState';
@@ -24,6 +24,19 @@ export const CheckoutStore = signalStore(
   withState(initialState),
   withComputed((store) => ({
     product: computed(() => CHECKOUT_PRODUCT),
+    paymentMethodDescription: computed(() => {
+      const payment = store.paymentSummary();
+      if (!payment) return '';
+      if (payment.method === PaymentMethod.Pix) return PAYMENT_METHOD_LABELS[PaymentMethod.Pix];
+
+      const card = [
+        payment.cardBrand,
+        payment.cardLastFourDigits ? `•••• ${payment.cardLastFourDigits}` : null,
+      ]
+        .filter(Boolean)
+        .join(' ');
+      return [PAYMENT_METHOD_LABELS[payment.method], card].filter(Boolean).join(' · ');
+    }),
     isProcessing: computed(() => store.paymentStatus() === PaymentStatus.Processing),
     hasSuccessfulPayment: computed(
       () => store.paymentStatus() === PaymentStatus.Success && store.paymentSummary() !== null,

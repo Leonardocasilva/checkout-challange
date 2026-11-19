@@ -45,3 +45,7 @@ Para verificar a simulação em `/pagamento`, use apenas dados fictícios:
 | Dados inválidos            | Número incorreto, nome vazio, validade vencida ou CVV incompleto                 | Mensagens nos campos e envio bloqueado                          |
 
 O código e o QR Code de Pix são demonstrativos e não realizam pagamentos. A simulação leva aproximadamente 1,6 segundo. Recarregar `/sucesso` ou `/erro` descarta o estado em memória e retorna ao pagamento.
+
+Após uma aprovação, confira em `/sucesso` o produto, o meio utilizado, o pedido, a data e o total pago. Em pagamentos com cartão, somente os últimos quatro dígitos aparecem. A próxima renovação usa o mesmo dia do mês seguinte, limitado ao último dia disponível naquele mês.
+
+Use **Ver recibo** para consultar os mesmos dados em um diálogo. **Acessar meu espaço** abre o aviso do ambiente demonstrativo. Os diálogos podem ser fechados pelo botão ou pela tecla `Esc`. Não há envio de e-mail nem acesso a uma conta real.
