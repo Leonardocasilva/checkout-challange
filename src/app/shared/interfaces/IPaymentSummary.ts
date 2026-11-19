@@ -5,4 +5,5 @@ export interface IPaymentSummary {
   product: IProduct;
   method: PaymentMethod;
   amountInCents: number;
+  cardLastFourDigits?: string;
 }

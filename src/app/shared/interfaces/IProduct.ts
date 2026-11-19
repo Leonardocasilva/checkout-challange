@@ -3,4 +3,5 @@ export interface IProduct {
   name: string;
   description: string;
   priceInCents: number;
+  features?: readonly string[];
 }

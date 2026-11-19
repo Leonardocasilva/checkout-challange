@@ -1,0 +1,30 @@
+<section class="order-summary" aria-labelledby="order-title">
+  <h2 id="order-title">Resumo do pedido</h2>
+  <div class="product-identity">
+    <span class="product-mark"><app-icon name="product" /></span>
+    <div>
+      <h3>{{ product().name }}</h3>
+      <p>{{ product().description }}</p>
+    </div>
+  </div>
+  <ul class="features">
+    @for (feature of product().features; track feature) {
+      <li><app-icon name="check" />{{ feature }}</li>
+    }
+  </ul>
+  <dl class="totals">
+    <div>
+      <dt>Subtotal</dt>
+      <dd>{{ product().priceInCents | price }}</dd>
+    </div>
+    <div>
+      <dt>Taxas</dt>
+      <dd>{{ 0 | price }}</dd>
+    </div>
+    <div class="total">
+      <dt>Total hoje</dt>
+      <dd>{{ product().priceInCents | price }}</dd>
+    </div>
+  </dl>
+  <p class="renewal-note">Renovação mensal. Cancele quando quiser, sem taxas adicionais.</p>
+</section>

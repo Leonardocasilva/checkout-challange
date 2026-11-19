@@ -1,0 +1,118 @@
+:host {
+  display: block;
+}
+
+.card-form {
+  .form-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  h2 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .card-brand {
+    padding: 0.1rem 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: 0.25rem;
+    color: #343478;
+    font-size: 0.625rem;
+    font-style: italic;
+    font-weight: 800;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .field {
+    min-width: 0;
+    margin-bottom: 1rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.45rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+    input {
+      width: 100%;
+      height: 3rem;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.875rem;
+      transition: border-color 0.15s;
+    }
+    input::placeholder {
+      color: var(--placeholder);
+    }
+    input:focus {
+      border-color: var(--primary);
+      outline: 3px solid var(--focus);
+    }
+    .input-wrap {
+      position: relative;
+    }
+    .input-wrap app-icon {
+      position: absolute;
+      top: 0.9rem;
+      left: 0.875rem;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .input-wrap input {
+      padding-left: 2.75rem;
+    }
+    &.invalid input {
+      border-color: var(--danger);
+      background: var(--danger-soft);
+    }
+    .field-error {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.35rem;
+      margin: 0.45rem 0 0;
+      color: var(--danger);
+      font-size: 0.75rem;
+    }
+    .field-error app-icon {
+      margin-top: 0.1rem;
+    }
+  }
+  #card-holder {
+    text-transform: uppercase;
+    &::placeholder {
+      text-transform: none;
+    }
+  }
+  .form-feedback {
+    min-height: 2.25rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .valid-message {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--success);
+  }
+  .terms-note {
+    margin: 1rem 0 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.6875rem;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 47.99rem) {
+    .field input {
+      font-size: 1rem;
+    }
+  }
+}

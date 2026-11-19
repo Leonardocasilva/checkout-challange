@@ -1,0 +1,28 @@
+<section class="pix-payment" aria-labelledby="pix-title">
+  <h2 id="pix-title">Pague com seu app do banco</h2>
+  <p>
+    Em uma compra real, você escaneia o QR Code ou usa o código abaixo. Nesta simulação, basta
+    concluir o pagamento.
+  </p>
+  <figure>
+    <img src="/pix-demo.svg" width="160" height="160" alt="QR Code demonstrativo do Nexo Pro" />
+    <figcaption>QR Code simulado, sem valor de pagamento</figcaption>
+  </figure>
+  <label for="pix-code">Pix copia e cola</label>
+  <input id="pix-code" [value]="code" readonly (focus)="codeInput.select()" #codeInput />
+  <button class="secondary-button" type="button" (click)="copyCode()">
+    <app-icon [name]="copyStatus() === 'copied' ? 'check' : 'copy'" />
+    {{ copyStatus() === 'copied' ? 'Código copiado' : 'Copiar código Pix' }}
+  </button>
+  <div class="copy-feedback" aria-live="polite">
+    @if (copyStatus() === 'copied') {
+      <p>Código copiado para a área de transferência.</p>
+    }
+    @if (copyStatus() === 'error') {
+      <p>Não foi possível copiar. Selecione o código e copie manualmente.</p>
+    }
+  </div>
+  <button class="primary-button" type="button" (click)="pay.emit()">
+    <app-icon name="arrow" />Concluir pagamento
+  </button>
+</section>

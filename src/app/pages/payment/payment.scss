@@ -1,9 +1,173 @@
-.payment-page {
-  h1 {
-    margin: 0 0 0.75rem;
-  }
+:host {
+  display: block;
+}
 
-  p {
-    margin: 0;
+.payment-page {
+  .page-heading {
+    margin-bottom: 2rem;
+    h1 {
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      line-height: 1.25;
+    }
+    p {
+      color: var(--muted);
+      font-size: 0.9375rem;
+    }
+    @media (max-width: 47.99rem) {
+      margin-bottom: 1.5rem;
+      h1 {
+        font-size: 1.6rem;
+      }
+      p {
+        font-size: 0.8125rem;
+      }
+    }
+  }
+  .checkout-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 1.5rem;
+    @media (max-width: 47.99rem) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .summary-column {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    @media (max-width: 47.99rem) {
+      grid-column: 1;
+    }
+  }
+  .payment-panel {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+    padding: 1.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    @media (max-width: 47.99rem) {
+      grid-row: 2;
+      padding: 1.25rem;
+    }
+  }
+  .demo-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin: 1.25rem 0.5rem 0;
+    color: var(--muted);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    app-icon {
+      margin-top: 0.1rem;
+      color: var(--primary);
+      font-size: 1.125rem;
+    }
+    strong {
+      display: block;
+      margin-bottom: 0.15rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+  }
+}
+.processing-panel {
+  max-width: 30rem;
+  margin: 3rem auto;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-align: center;
+  box-shadow: var(--shadow);
+  .spinner {
+    display: block;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0 auto 1.5rem;
+    border: 0.3rem solid var(--primary-soft);
+    border-right-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+  h1 {
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+    letter-spacing: -0.025em;
+  }
+  .processing-description {
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+  .processing-order {
+    margin: 1.5rem 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    text-align: left;
+  }
+  dl {
+    margin: 1.5rem 0 0;
+    font-size: 0.8125rem;
+    > div {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+    dt {
+      color: var(--muted);
+    }
+    dd {
+      margin: 0;
+      font-weight: 600;
+    }
+    .total {
+      align-items: baseline;
+      font-size: 1rem;
+    }
+    .total dd {
+      font-size: 1.5rem;
+    }
+  }
+  .processing-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: var(--primary-soft);
+    color: var(--primary);
+    text-align: left;
+    font-size: 0.75rem;
+    strong {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+  }
+  .simulation-note {
+    margin-top: 1.25rem;
+    color: var(--muted);
+    font-size: 0.6875rem;
+  }
+  @media (max-width: 47.99rem) {
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      animation-duration: 3s;
+    }
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }

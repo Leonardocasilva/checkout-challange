@@ -1,4 +1,75 @@
-<section class="payment-page" aria-labelledby="payment-title">
-  <h1 id="payment-title">Pagamento</h1>
-  <p>Finalize a compra do seu produto.</p>
-</section>
+<div class="payment-page">
+  @if (store.isProcessing()) {
+    <section
+      class="processing-panel"
+      aria-labelledby="processing-title"
+      role="status"
+      aria-live="polite"
+    >
+      <span class="spinner" aria-hidden="true"></span>
+      <h1 id="processing-title">Processando seu pagamento</h1>
+      <p class="processing-description">
+        Estamos aguardando a confirmação.<br />Isso pode levar alguns segundos.
+      </p>
+      <div class="processing-order">
+        <div class="product-identity">
+          <span class="product-mark"><app-icon name="product" /></span>
+          <div>
+            <h2>{{ store.product().name }}</h2>
+            <p>{{ store.product().description }}</p>
+          </div>
+        </div>
+        <dl>
+          <div>
+            <dt>Meio usado</dt>
+            <dd>{{ methodLabels[store.selectedMethod()!] }}</dd>
+          </div>
+          <div class="total">
+            <dt>Total</dt>
+            <dd>{{ store.product().priceInCents | price }}</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="processing-note">
+        <app-icon name="info" />
+        <p>
+          <strong>Aguarde a confirmação</strong>Não feche esta página nem envie o pagamento
+          novamente.
+        </p>
+      </div>
+      <p class="simulation-note">Estado de processamento simulado</p>
+    </section>
+  } @else {
+    <header class="page-heading">
+      <h1>Finalize sua assinatura</h1>
+      <p>Falta só um passo para começar com o Nexo Pro.</p>
+    </header>
+    <div class="checkout-grid">
+      <aside class="summary-column" aria-label="Pedido">
+        <app-product-summary [product]="store.product()" />
+        <div class="demo-note">
+          <app-icon name="shield" />
+          <p>
+            <strong>Ambiente de demonstração</strong>Use apenas dados fictícios. Nenhuma cobrança
+            será realizada.
+          </p>
+        </div>
+      </aside>
+      <section class="payment-panel" aria-label="Dados do pagamento">
+        <app-payment-method-selector
+          [selected]="store.selectedMethod()"
+          (methodChange)="store.selectPaymentMethod($event)"
+        />
+        @if (store.selectedMethod() === PaymentMethod.Pix) {
+          <app-pix-payment (pay)="payWithPix()" />
+        } @else {
+          <app-card-payment-form
+            [method]="store.selectedMethod()!"
+            [amount]="store.product().priceInCents"
+            (pay)="payWithCard($event)"
+          />
+        }
+      </section>
+    </div>
+  }
+</div>
