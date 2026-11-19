@@ -17,6 +17,8 @@ __screenshots__/
 
 # Documentação local
 Edits.md
+AGENTS.md
+agents.md
 
 # Ferramentas e arquivos temporários
 /.angular-cli.json
