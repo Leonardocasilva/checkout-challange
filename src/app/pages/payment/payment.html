@@ -41,7 +41,7 @@
     </section>
   } @else {
     <header class="page-heading">
-      <h1>Finalize sua assinatura</h1>
+      <h1 #heading tabindex="-1">Finalize sua assinatura</h1>
       <p>Falta só um passo para começar com o Nexo Pro.</p>
     </header>
     <div class="checkout-grid">
@@ -62,12 +62,14 @@
         />
         @if (store.selectedMethod() === PaymentMethod.Pix) {
           <app-pix-payment (pay)="payWithPix()" />
-        } @else {
+        } @else if (store.selectedMethod(); as method) {
           <app-card-payment-form
-            [method]="store.selectedMethod()!"
+            [method]="method"
             [amount]="store.product().priceInCents"
             (pay)="payWithCard($event)"
           />
+        } @else {
+          <p class="method-hint" role="status">Selecione um meio de pagamento para continuar.</p>
         }
       </section>
     </div>

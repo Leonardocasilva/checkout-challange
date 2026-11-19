@@ -1,5 +1,42 @@
-<section class="error-page" aria-labelledby="error-title">
-  <h1 id="error-title">Não foi possível concluir o pagamento</h1>
-  <p>{{ checkoutStore.paymentError()?.message }}</p>
-  <a routerLink="/pagamento" (click)="checkoutStore.resetCheckout()">Voltar ao pagamento</a>
-</section>
+@if (store.paymentError(); as error) {
+  <div class="error-page">
+    <section class="error-card" aria-labelledby="error-title">
+      <span class="error-mark"><app-icon name="info" /></span>
+      <h1 #heading id="error-title" tabindex="-1">Não foi possível concluir o pagamento</h1>
+      <p class="error-description">
+        Não se preocupe: nenhuma cobrança foi realizada. Você pode tentar novamente.
+      </p>
+
+      <div class="error-reason">
+        <app-icon name="info" />
+        <div>
+          <h2>{{ reasonTitle() }}</h2>
+          <p>{{ error.message }}</p>
+        </div>
+      </div>
+
+      @if (store.failedPaymentDetails(); as payment) {
+        <app-payment-details
+          [payment]="payment"
+          [methodDescription]="store.paymentMethodDescription()"
+          [approved]="false"
+        />
+      }
+
+      <div class="error-actions">
+        <a class="primary-button" routerLink="/pagamento"
+          ><app-icon name="retry" />Tentar novamente</a
+        >
+        <a class="secondary-button" routerLink="/pagamento" [queryParams]="{ escolherMeio: true }"
+          >Escolher outro meio</a
+        >
+      </div>
+      <p class="retry-hint">Você pode pagar com outro cartão ou escolher Pix.</p>
+    </section>
+
+    <div class="help-note">
+      <app-icon name="chat" />
+      <app-checkout-info topic="help" label="Ainda precisa de ajuda? Fale com a gente" />
+    </div>
+  </div>
+}

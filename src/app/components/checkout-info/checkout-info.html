@@ -1,5 +1,5 @@
 <button class="info-link" type="button" (click)="dialog.showModal()">
-  {{ content[topic()].label }}
+  {{ label() ?? content[topic()].label }}
 </button>
 <dialog #dialog class="info-dialog" [attr.aria-label]="content[topic()].title">
   <h2>{{ content[topic()].title }}</h2>

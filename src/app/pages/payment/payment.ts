@@ -1,5 +1,14 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
+  effect,
+  inject,
+  viewChild,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PAYMENT_METHOD_LABELS } from '@shared/constants/checkout';
 import { PaymentMethod } from '@shared/enums/PaymentMethod';
 import { ICardData } from '@shared/interfaces/ICardData';
@@ -22,12 +31,21 @@ export class PaymentPage {
   readonly store = inject(CheckoutStore);
   readonly PaymentMethod = PaymentMethod;
   readonly methodLabels = PAYMENT_METHOD_LABELS;
+  private readonly heading = viewChild<ElementRef<HTMLHeadingElement>>('heading');
+  private readonly methodSelector = viewChild(PaymentMethodSelector);
   private readonly router = inject(Router);
 
   constructor() {
+    const chooseMethod =
+      inject(ActivatedRoute).snapshot.queryParamMap.get('escolherMeio') === 'true';
     const method = this.store.selectedMethod() ?? PaymentMethod.Credit;
     this.store.resetCheckout();
-    this.store.selectPaymentMethod(method);
+    if (!chooseMethod) this.store.selectPaymentMethod(method);
+
+    afterNextRender(() => {
+      if (chooseMethod) this.methodSelector()?.focus();
+      else this.heading()?.nativeElement.focus();
+    });
 
     effect(() => {
       if (this.store.hasSuccessfulPayment()) void this.router.navigateByUrl('/sucesso');

@@ -12,7 +12,9 @@ export type IconName =
   | 'info'
   | 'arrow'
   | 'check-circle'
-  | 'receipt';
+  | 'receipt'
+  | 'retry'
+  | 'chat';
 
 @Component({
   selector: 'app-icon',

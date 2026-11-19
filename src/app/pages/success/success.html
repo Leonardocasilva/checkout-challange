@@ -9,8 +9,9 @@
       </p>
       <span class="subscription-status"><app-icon name="check" />Assinatura ativa</span>
 
-      <app-payment-receipt
+      <app-payment-details
         [payment]="payment"
+        [paidAt]="payment.paidAt"
         [methodDescription]="store.paymentMethodDescription()"
       />
 
@@ -34,8 +35,9 @@
     <dialog #receiptDialog class="success-dialog receipt-dialog" aria-labelledby="receipt-title">
       <h2 id="receipt-title" tabindex="-1" autofocus>Recibo do pagamento</h2>
       <p class="dialog-description">Comprovante demonstrativo. Nenhuma cobrança foi realizada.</p>
-      <app-payment-receipt
+      <app-payment-details
         [payment]="payment"
+        [paidAt]="payment.paidAt"
         [methodDescription]="store.paymentMethodDescription()"
       />
       <button class="primary-button" type="button" (click)="receiptDialog.close()">

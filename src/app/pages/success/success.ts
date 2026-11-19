@@ -11,13 +11,13 @@ import {
 import { Router } from '@angular/router';
 import { CheckoutStore } from '@state/stores/checkout.store';
 import { Icon } from '../../components/icon/icon';
-import { PaymentReceipt } from '../../components/payment-receipt/payment-receipt';
+import { PaymentDetails } from '../../components/payment-details/payment-details';
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' });
 
 @Component({
   selector: 'app-success-page',
-  imports: [Icon, PaymentReceipt],
+  imports: [Icon, PaymentDetails],
   templateUrl: './success.html',
   styleUrl: './success.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

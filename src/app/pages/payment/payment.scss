@@ -3,9 +3,16 @@
 }
 
 .payment-page {
+  .method-hint {
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
   .page-heading {
     margin-bottom: 2rem;
     h1 {
+      &:focus {
+        outline: none;
+      }
       margin-bottom: 0.5rem;
       font-size: 2rem;
       font-weight: 600;

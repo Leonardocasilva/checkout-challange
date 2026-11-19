@@ -80,7 +80,7 @@ describe('Tela de sucesso', () => {
     });
     fixture.detectChanges();
     const receipts = fixture.nativeElement.querySelectorAll(
-      'app-payment-receipt',
+      'app-payment-details',
     ) as NodeListOf<HTMLElement>;
     expect(receipts).toHaveLength(2);
     for (const receipt of receipts) {

@@ -37,14 +37,16 @@ A compilação de produção é gerada em `dist/checkout-challange/browser`. Par
 
 Para verificar a simulação em `/pagamento`, use apenas dados fictícios:
 
-| Cenário                    | Dados                                                                            | Resultado                                                       |
-| -------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Crédito ou débito aprovado | Número `4242 4242 4242 4242`, nome `Marina Almeida`, validade futura e CVV `123` | Processamento e redirecionamento para `/sucesso`                |
-| Cartão recusado            | Número `4000 0000 0000 0002`, nome, validade futura e CVV válidos                | Redirecionamento para `/erro`, com opção de voltar ao pagamento |
-| Pix                        | Escolha Pix, copie o código se desejar e clique em concluir                      | Processamento e redirecionamento para `/sucesso`                |
-| Dados inválidos            | Número incorreto, nome vazio, validade vencida ou CVV incompleto                 | Mensagens nos campos e envio bloqueado                          |
+| Cenário                    | Dados                                                                            | Resultado                                                               |
+| -------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Crédito ou débito aprovado | Número `4242 4242 4242 4242`, nome `Marina Almeida`, validade futura e CVV `123` | Processamento e redirecionamento para `/sucesso`                        |
+| Cartão recusado            | Número `4000 0000 0000 0002`, nome, validade futura e CVV válidos                | Redirecionamento para `/erro`, com motivo da recusa e opções de retorno |
+| Pix                        | Escolha Pix, copie o código se desejar e clique em concluir                      | Processamento e redirecionamento para `/sucesso`                        |
+| Dados inválidos            | Número incorreto, nome vazio, validade vencida ou CVV incompleto                 | Mensagens nos campos e envio bloqueado                                  |
 
 O código e o QR Code de Pix são demonstrativos e não realizam pagamentos. A simulação leva aproximadamente 1,6 segundo. Recarregar `/sucesso` ou `/erro` descarta o estado em memória e retorna ao pagamento.
+
+Após uma recusa, confira em `/erro` o motivo, o pedido, o meio utilizado com o cartão mascarado e o total a pagar. **Tentar novamente** retorna ao formulário com o mesmo meio selecionado e os campos vazios. **Escolher outro meio** retorna à seleção sem uma opção marcada, permitindo escolher outro cartão ou Pix. O link de ajuda abre as orientações da demonstração.
 
 Após uma aprovação, confira em `/sucesso` o produto, o meio utilizado, o pedido, a data e o total pago. Em pagamentos com cartão, somente os últimos quatro dígitos aparecem. A próxima renovação usa o mesmo dia do mês seguinte, limitado ao último dia disponível naquele mês.
 

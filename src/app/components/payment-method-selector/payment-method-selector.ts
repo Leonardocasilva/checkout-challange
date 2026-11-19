@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  input,
+  output,
+  viewChild,
+} from '@angular/core';
 import { PAYMENT_METHOD_LABELS } from '@shared/constants/checkout';
 import { PaymentMethod } from '@shared/enums/PaymentMethod';
 import { Icon, IconName } from '../icon/icon';
@@ -14,9 +21,14 @@ export class PaymentMethodSelector {
   readonly selected = input<PaymentMethod | null>(null);
   readonly methodChange = output<PaymentMethod>();
   readonly labels = PAYMENT_METHOD_LABELS;
+  private readonly firstOption = viewChild<ElementRef<HTMLInputElement>>('methodOption');
   readonly methods: { value: PaymentMethod; icon: IconName }[] = [
     { value: PaymentMethod.Credit, icon: 'card' },
     { value: PaymentMethod.Debit, icon: 'card' },
     { value: PaymentMethod.Pix, icon: 'pix' },
   ];
+
+  focus(): void {
+    this.firstOption()?.nativeElement.focus();
+  }
 }

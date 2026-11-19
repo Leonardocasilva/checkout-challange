@@ -1,14 +1,8 @@
-import { PaymentMethod } from '@shared/enums/PaymentMethod';
-import { IProduct } from './IProduct';
+import { IPaymentDetails } from './IPaymentDetails';
 
-export interface IPaymentSummary {
-  product: IProduct;
-  method: PaymentMethod;
-  amountInCents: number;
+export interface IPaymentSummary extends IPaymentDetails {
   orderId: string;
   paidAt: string;
   nextBillingAt: string;
   customerFirstName?: string;
-  cardBrand?: 'Visa';
-  cardLastFourDigits?: string;
 }
