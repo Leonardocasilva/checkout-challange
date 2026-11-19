@@ -10,4 +10,6 @@
 - Usar SCSS puro, classes em `kebab-case` e seletores aninhados, com pouca profundidade. Usar `&` para estados e modificadores e manter as media queries no bloco correspondente.
 - Seguir a organização do Time Tree: `pages`, `components`, `core`, `state/stores` e `shared`, conforme cada etapa exigir.
 - Usar NgRx SignalStore com RxJS para o estado compartilhado e a coordenação das operações assíncronas.
+- Usar Vitest obrigatoriamente para todos os testes unitários do projeto.
+- Manter no README as tecnologias, os requisitos, a instalação, a execução e a verificação. Não incluir fluxo de trabalho nem decisões de etapas.
 - Validar a compilação e os testes pertinentes antes de publicar cada etapa.

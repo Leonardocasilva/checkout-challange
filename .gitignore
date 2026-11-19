@@ -15,6 +15,9 @@ __screenshots__/
 .env.*
 !.env.example
 
+# Documentação local
+Edits.md
+
 # Ferramentas e arquivos temporários
 /.angular-cli.json
 /.ng/
