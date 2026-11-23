@@ -46,7 +46,9 @@ export class CardPaymentForm {
 
   error(field: keyof ICardData): string | null {
     const control = this.form.controls[field];
-    if (!control.touched || control.valid) return null;
+    const validateOnType = control.dirty && (field === 'expiry' || field === 'cvv');
+    if (control.valid || (!control.touched && !validateOnType)) return null;
+    if (field === 'expiry' && !control.touched && control.value.length < 5) return null;
     if (field === 'number') return 'Número inválido. Confira os 16 dígitos do cartão.';
     if (field === 'holder')
       return control.value.length > 80

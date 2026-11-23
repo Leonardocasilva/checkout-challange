@@ -68,6 +68,78 @@ describe('Formulário do cartão', () => {
     return input;
   }
 
+  it('deve manter os campos sem mensagens antes da interação', () => {
+    const fixture = setup();
+    expect(fixture.nativeElement.querySelector('.field-error')).toBeNull();
+  });
+
+  it.each([
+    { value: '10/30', message: 'Cartão vencido.' },
+    { value: '12/29', message: 'Cartão vencido.' },
+    { value: '00/31', message: 'Use o formato MM/AA.' },
+    { value: '13/31', message: 'Use o formato MM/AA.' },
+  ])('deve mostrar $message ao completar $value sem sair do campo', ({ value, message }) => {
+    const fixture = setup();
+    const control = fixture.componentInstance.form.controls.expiry;
+    inputValue(fixture, 'card-expiry', value.slice(0, -1));
+    expect(fixture.nativeElement.querySelector('#expiry-error')).toBeNull();
+    const input = inputValue(fixture, 'card-expiry', value);
+    expect(control.touched).toBe(false);
+    expect(fixture.nativeElement.querySelector('#expiry-error')?.textContent).toContain(message);
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-describedby')).toBe('expiry-error');
+    inputValue(fixture, 'card-expiry', '11/30');
+    expect(control.valid).toBe(true);
+    expect(fixture.nativeElement.querySelector('#expiry-error')).toBeNull();
+    expect(input.getAttribute('aria-invalid')).toBe('false');
+  });
+
+  it('deve informar validade incompleta ao sair do campo', () => {
+    const fixture = setup();
+    const input = inputValue(fixture, 'card-expiry', '12/3');
+    expect(fixture.nativeElement.querySelector('#expiry-error')).toBeNull();
+    input.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('#expiry-error')?.textContent).toContain(
+      'Use o formato MM/AA.',
+    );
+  });
+
+  it('deve atualizar a mensagem do CVV durante a digitação e ao apagar sem sair do campo', () => {
+    const fixture = setup();
+    const control = fixture.componentInstance.form.controls.cvv;
+    for (const value of ['1', '12', '123', '12', '']) {
+      const input = inputValue(fixture, 'card-cvv', value);
+      expect(control.touched).toBe(false);
+      const message = fixture.nativeElement.querySelector('#cvv-error');
+      if (value.length === 3) {
+        expect(message).toBeNull();
+        expect(input.getAttribute('aria-invalid')).toBe('false');
+      } else {
+        expect(message?.textContent).toContain('Use 3 dígitos.');
+        expect(input.getAttribute('aria-invalid')).toBe('true');
+      }
+    }
+  });
+
+  it('deve permitir o envio de um número aleatório para a simulação decidir o resultado', () => {
+    const fixture = setup();
+    const pay = vi.fn();
+    fixture.componentInstance.pay.subscribe(pay);
+    inputValue(fixture, 'card-number', '1234567890123456');
+    inputValue(fixture, 'card-holder', 'Teste 123');
+    inputValue(fixture, 'card-expiry', '1130');
+    inputValue(fixture, 'card-cvv', '000');
+    expect(fixture.nativeElement.querySelector('button[type="submit"]').disabled).toBe(false);
+    fixture.componentInstance.submit();
+    expect(pay).toHaveBeenCalledExactlyOnceWith({
+      number: '1234567890123456',
+      holder: 'Teste 123',
+      expiry: '11/30',
+      cvv: '000',
+    });
+  });
+
   it('deve agrupar o cartão durante a digitação e manter o formulário sincronizado', () => {
     const fixture = setup();
     const input = inputValue(fixture, 'card-number', '4242');

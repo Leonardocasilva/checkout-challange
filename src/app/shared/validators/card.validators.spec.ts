@@ -1,14 +1,19 @@
 import { expiryError, isValidCardNumber, isValidCvv, isValidHolder } from './card.validators';
 
 describe('Validação dos dados do cartão', () => {
-  it.each(['4242 4242 4242 4242', '4000-0000-0000-0002', '5555555555554444'])(
-    'deve aceitar o número válido %s',
+  it.each([
+    '4242 4242 4242 4242',
+    '4000-0000-0000-0002',
+    '5555555555554444',
+    '1234567890123456',
+    '4242424242424241',
+    '0000000000000000',
+  ])(
+    'deve aceitar qualquer sequência de 16 dígitos para a simulação: %s',
     (number) => expect(isValidCardNumber(number)).toBe(true),
   );
   it.each([
     '',
-    '4242424242424241',
-    '0000000000000000',
     '424242424242',
     '42424242424242424242',
     '4242a424242424242',
@@ -18,10 +23,10 @@ describe('Validação dos dados do cartão', () => {
   ])('deve rejeitar o número inválido %s', (number) =>
     expect(isValidCardNumber(number)).toBe(false),
   );
-  it('deve aceitar nomes com acentos e rejeitar espaços, números e símbolos isolados', () => {
-    expect(isValidHolder(" Ana D'Ávila ")).toBe(true);
-    expect(isValidHolder('João')).toBe(true);
-    for (const name of ['', '  ', '12', '--']) expect(isValidHolder(name)).toBe(false);
+  it('deve aceitar qualquer nome preenchido e rejeitar somente espaços ou valor vazio', () => {
+    for (const name of [" Ana D'Ávila ", 'João', 'A', 'Teste 123'])
+      expect(isValidHolder(name)).toBe(true);
+    for (const name of ['', '  ']) expect(isValidHolder(name)).toBe(false);
   });
   it('deve limitar o nome a 80 caracteres sem restringir nomes com mais de 20 caracteres', () => {
     expect(isValidHolder('Leonardo Carvalho da Silva')).toBe(true);

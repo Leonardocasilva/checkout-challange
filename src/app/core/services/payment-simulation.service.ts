@@ -19,7 +19,7 @@ export class PaymentSimulationService {
 
       const number =
         request.method === PaymentMethod.Pix ? null : normalizeCardNumber(request.card.number);
-      const declined = number === '4000000000000002';
+      const declined = number !== null && number !== '4242424242424242';
       const customerFirstName =
         request.method === PaymentMethod.Pix
           ? undefined

@@ -39,14 +39,18 @@ Para verificar a simulação em `/pagamento`, use apenas dados fictícios:
 
 | Cenário                    | Dados                                                                            | Resultado                                                               |
 | -------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| Crédito ou débito aprovado | Número `4242 4242 4242 4242`, nome `Marina Almeida`, validade futura e CVV `123` | Processamento e redirecionamento para `/sucesso`                        |
-| Cartão recusado            | Número `4000 0000 0000 0002`, nome, validade futura e CVV válidos                | Redirecionamento para `/erro`, com motivo da recusa e opções de retorno |
+| Crédito ou débito aprovado | Número `4242 4242 4242 4242`, qualquer nome preenchido, validade atual ou futura e qualquer CVV de 3 dígitos | Processamento e redirecionamento para `/sucesso` |
+| Cartão recusado            | Qualquer outro número de 16 dígitos, como `1234 5678 9012 3456`, com os demais campos válidos | Processamento e redirecionamento para `/erro`, com motivo da recusa e opções de retorno |
 | Pix                        | Escolha Pix, copie o código se desejar e clique em concluir                      | Processamento e redirecionamento para `/sucesso`                        |
-| Dados inválidos            | Número incorreto, nome vazio, validade vencida ou CVV incompleto                 | Mensagens nos campos e envio bloqueado                                  |
+| Dados inválidos            | Número incompleto, nome vazio, validade vencida ou CVV incompleto                 | Mensagens nos campos e envio bloqueado                                  |
 
 O código e o QR Code de Pix são demonstrativos e não realizam pagamentos. A simulação leva aproximadamente 1,6 segundo. Recarregar `/sucesso` ou `/erro` descarta o estado em memória e retorna ao pagamento.
 
 O formulário aceita cartões de 16 dígitos, agrupados automaticamente com espaços durante a digitação. O nome tem limite de 80 caracteres, a validade recebe a máscara `MM/AA` e o CVV aceita somente 3 dígitos. Confira também a colagem de valores e a edição no meio dos campos.
+
+Somente o número `4242 4242 4242 4242` é aprovado em crédito ou débito. Qualquer outra sequência de 16 dígitos pode ser enviada e resulta em recusa na simulação. Nome, validade e CVV não precisam coincidir com valores fixos de teste.
+
+A validade aceita o mês atual e os meses futuros. Ao completar `MM/AA`, um mês inválido ou uma data vencida já exibe erro, sem precisar sair do campo. O CVV informa a exigência de 3 dígitos durante a digitação e remove o erro ao completar o terceiro. Uma validade incompleta exibe erro ao sair do campo.
 
 Após uma recusa, confira em `/erro` o motivo, o pedido, o meio utilizado com o cartão mascarado e o total a pagar. **Tentar novamente** retorna ao formulário com o mesmo meio selecionado e os campos vazios. **Escolher outro meio** retorna à seleção sem uma opção marcada, permitindo escolher outro cartão ou Pix. O link de ajuda abre as orientações da demonstração.
 

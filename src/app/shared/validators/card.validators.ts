@@ -6,24 +6,11 @@ export function normalizeCardNumber(value: string): string {
 }
 
 export function isValidCardNumber(value: string): boolean {
-  const digits = normalizeCardNumber(value);
-  if (!/^\d{16}$/.test(digits) || /^(\d)\1+$/.test(digits)) return false;
-
-  const sum = [...digits].reverse().reduce((total, digit, index) => {
-    let number = Number(digit);
-    if (index % 2 === 1) number *= 2;
-    return total + (number > 9 ? number - 9 : number);
-  }, 0);
-  return sum % 10 === 0;
+  return /^\d{16}$/.test(normalizeCardNumber(value));
 }
 
 export function isValidHolder(value: string): boolean {
-  return (
-    value.length <= 80 &&
-    value.trim().length >= 2 &&
-    /\p{L}/u.test(value) &&
-    /^[\p{L}\p{M} .'-]+$/u.test(value.trim())
-  );
+  return value.length <= 80 && value.trim().length > 0;
 }
 
 export function expiryError(value: string, now = new Date()): 'expiry' | 'expired' | null {
