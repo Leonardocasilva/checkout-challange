@@ -22,8 +22,9 @@
         inputmode="numeric"
         autocomplete="cc-number"
         placeholder="0000 0000 0000 0000"
-        maxlength="25"
-        (blur)="formatNumber()"
+        maxlength="19"
+        (input)="maskInput('number', $event)"
+        (beforeinput)="deleteAtSeparator($event)"
         [attr.aria-invalid]="!!error('number')"
         [attr.aria-describedby]="error('number') ? 'number-error' : null"
       />
@@ -59,7 +60,8 @@
         autocomplete="cc-exp"
         placeholder="MM/AA"
         maxlength="5"
-        (blur)="formatExpiry()"
+        (input)="maskInput('expiry', $event)"
+        (beforeinput)="deleteAtSeparator($event)"
         [attr.aria-invalid]="!!error('expiry')"
         [attr.aria-describedby]="error('expiry') ? 'expiry-error' : null"
       />
@@ -78,7 +80,8 @@
           inputmode="numeric"
           autocomplete="cc-csc"
           placeholder="•••"
-          maxlength="4"
+          maxlength="3"
+          (input)="maskInput('cvv', $event)"
           [attr.aria-invalid]="!!error('cvv')"
           [attr.aria-describedby]="error('cvv') ? 'cvv-error' : null"
         />

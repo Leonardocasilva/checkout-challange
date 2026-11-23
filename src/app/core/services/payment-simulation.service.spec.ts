@@ -29,20 +29,62 @@ describe('Simulação do pagamento', () => {
       expect(JSON.stringify(next.mock.calls[0])).not.toContain('cvv');
     },
   );
-  it('deve simular a recusa do cartão de teste', async () => {
+  it.each([PaymentMethod.Credit, PaymentMethod.Debit])(
+    'deve recusar qualquer outro número de 16 dígitos após processar %s',
+    (method) => {
+      for (const number of [
+        '4000 0000 0000 0002',
+        '1234567890123456',
+        '4242424242424241',
+        '0000000000000000',
+        '5555555555554444',
+      ]) {
+        const next = vi.fn();
+        const error = vi.fn();
+        service.process({ method, card: { ...card, number } }).subscribe({ next, error });
+        vi.advanceTimersByTime(1599);
+        expect(error).not.toHaveBeenCalled();
+        vi.advanceTimersByTime(1);
+        expect(next).not.toHaveBeenCalled();
+        expect(error).toHaveBeenCalledExactlyOnceWith(
+          expect.objectContaining({
+            code: 'PAYMENT_DECLINED',
+            details: expect.objectContaining({ method, cardLastFourDigits: number.slice(-4) }),
+          }),
+        );
+        expect(JSON.stringify(error.mock.calls)).not.toContain(number.replace(/\s/g, ''));
+        expect(JSON.stringify(error.mock.calls)).not.toContain('cvv');
+      }
+    },
+  );
+  it.each([
+    { holder: 'A', expiry: '11/30', cvv: '000' },
+    { holder: 'Teste 123', expiry: '01/31', cvv: '999' },
+    { holder: "João D'Ávila", expiry: '12/99', cvv: '456' },
+  ])('deve aprovar o cartão de sucesso com outros dados válidos: %j', async (data) => {
     const result = firstValueFrom(
       service.process({
         method: PaymentMethod.Credit,
-        card: { ...card, number: '4000000000000002' },
+        card: { number: '4242 4242 4242 4242', ...data },
       }),
     );
-    const assertion = expect(result).rejects.toMatchObject({ code: 'PAYMENT_DECLINED' });
     vi.advanceTimersByTime(1600);
-    await assertion;
+    expect(await result).toMatchObject({ cardLastFourDigits: '4242' });
   });
-  it('deve rejeitar dados inválidos mesmo quando chamados diretamente', async () => {
+  it.each([
+    { cvv: '1' },
+    { cvv: '1234' },
+    { holder: 'A'.repeat(81) },
+    { holder: '   ' },
+    { number: '4000000000000000006' },
+    { expiry: '10/30' },
+    { expiry: '12/29' },
+    { expiry: '13/35' },
+  ])('deve rejeitar dados inválidos mesmo quando chamados diretamente: %j', async (invalid) => {
     await expect(
-      firstValueFrom(service.process({ method: PaymentMethod.Debit, card: { ...card, cvv: '1' } })),
+      firstValueFrom(
+        service.process({ method: PaymentMethod.Debit, card: { ...card, ...invalid } }),
+      ),
     ).rejects.toMatchObject({ code: 'INVALID_CARD' });
   });
   it('deve aprovar Pix sem solicitar dados do cartão', async () => {
