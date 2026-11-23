@@ -46,6 +46,8 @@ Para verificar a simulação em `/pagamento`, use apenas dados fictícios:
 
 O código e o QR Code de Pix são demonstrativos e não realizam pagamentos. A simulação leva aproximadamente 1,6 segundo. Recarregar `/sucesso` ou `/erro` descarta o estado em memória e retorna ao pagamento.
 
+O formulário aceita cartões de 16 dígitos, agrupados automaticamente com espaços durante a digitação. O nome tem limite de 80 caracteres, a validade recebe a máscara `MM/AA` e o CVV aceita somente 3 dígitos. Confira também a colagem de valores e a edição no meio dos campos.
+
 Após uma recusa, confira em `/erro` o motivo, o pedido, o meio utilizado com o cartão mascarado e o total a pagar. **Tentar novamente** retorna ao formulário com o mesmo meio selecionado e os campos vazios. **Escolher outro meio** retorna à seleção sem uma opção marcada, permitindo escolher outro cartão ou Pix. O link de ajuda abre as orientações da demonstração.
 
 Após uma aprovação, confira em `/sucesso` o produto, o meio utilizado, o pedido, a data e o total pago. Em pagamentos com cartão, somente os últimos quatro dígitos aparecem. A próxima renovação usa o mesmo dia do mês seguinte, limitado ao último dia disponível naquele mês.

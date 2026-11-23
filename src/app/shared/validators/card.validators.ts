@@ -7,7 +7,7 @@ export function normalizeCardNumber(value: string): string {
 
 export function isValidCardNumber(value: string): boolean {
   const digits = normalizeCardNumber(value);
-  if (!/^\d{13,19}$/.test(digits) || /^(\d)\1+$/.test(digits)) return false;
+  if (!/^\d{16}$/.test(digits) || /^(\d)\1+$/.test(digits)) return false;
 
   const sum = [...digits].reverse().reduce((total, digit, index) => {
     let number = Number(digit);
@@ -19,7 +19,10 @@ export function isValidCardNumber(value: string): boolean {
 
 export function isValidHolder(value: string): boolean {
   return (
-    value.trim().length >= 2 && /\p{L}/u.test(value) && /^[\p{L}\p{M} .'-]+$/u.test(value.trim())
+    value.length <= 80 &&
+    value.trim().length >= 2 &&
+    /\p{L}/u.test(value) &&
+    /^[\p{L}\p{M} .'-]+$/u.test(value.trim())
   );
 }
 
@@ -34,7 +37,7 @@ export function expiryError(value: string, now = new Date()): 'expiry' | 'expire
 }
 
 export function isValidCvv(value: string): boolean {
-  return /^\d{3,4}$/.test(value);
+  return /^\d{3}$/.test(value);
 }
 
 export function isValidCard(card: ICardData): boolean {

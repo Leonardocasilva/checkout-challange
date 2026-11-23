@@ -40,9 +40,16 @@ describe('Simulação do pagamento', () => {
     vi.advanceTimersByTime(1600);
     await assertion;
   });
-  it('deve rejeitar dados inválidos mesmo quando chamados diretamente', async () => {
+  it.each([
+    { cvv: '1' },
+    { cvv: '1234' },
+    { holder: 'A'.repeat(81) },
+    { number: '4000000000000000006' },
+  ])('deve rejeitar dados inválidos mesmo quando chamados diretamente: %j', async (invalid) => {
     await expect(
-      firstValueFrom(service.process({ method: PaymentMethod.Debit, card: { ...card, cvv: '1' } })),
+      firstValueFrom(
+        service.process({ method: PaymentMethod.Debit, card: { ...card, ...invalid } }),
+      ),
     ).rejects.toMatchObject({ code: 'INVALID_CARD' });
   });
   it('deve aprovar Pix sem solicitar dados do cartão', async () => {

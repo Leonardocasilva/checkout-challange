@@ -47,22 +47,58 @@ export class CardPaymentForm {
   error(field: keyof ICardData): string | null {
     const control = this.form.controls[field];
     if (!control.touched || control.valid) return null;
-    if (field === 'number') return 'Número inválido. Confira os dígitos do cartão.';
-    if (field === 'holder') return 'Informe o nome como aparece no cartão.';
-    if (field === 'cvv') return 'Use 3 ou 4 dígitos.';
+    if (field === 'number') return 'Número inválido. Confira os 16 dígitos do cartão.';
+    if (field === 'holder')
+      return control.value.length > 80
+        ? 'Use no máximo 80 caracteres.'
+        : 'Informe o nome como aparece no cartão.';
+    if (field === 'cvv') return 'Use 3 dígitos.';
     return control.hasError('expired') ? 'Cartão vencido.' : 'Use o formato MM/AA.';
   }
 
-  formatNumber(): void {
-    const value = normalizeCardNumber(this.form.controls.number.value);
-    if (/^\d+$/.test(value))
-      this.form.controls.number.setValue(value.replace(/(.{4})(?=.)/g, '$1 '));
+  maskInput(field: 'number' | 'expiry' | 'cvv', event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const limit = field === 'number' ? 16 : field === 'expiry' ? 4 : 3;
+    const position = input.selectionStart ?? input.value.length;
+    const digitsBeforeCursor = Math.min(
+      input.value.slice(0, position).replace(/\D/g, '').length,
+      limit,
+    );
+    const digits = input.value.replace(/\D/g, '').slice(0, limit);
+    let value = digits;
+    let cursor = digitsBeforeCursor;
+
+    if (field === 'number') {
+      value = digits.match(/.{1,4}/g)?.join(' ') ?? '';
+      cursor += Math.floor(Math.max(0, digitsBeforeCursor - 1) / 4);
+    } else if (field === 'expiry' && digits.length >= 2) {
+      value = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+      if (digitsBeforeCursor >= 2) cursor += 1;
+    }
+
+    this.form.controls[field].setValue(value, { emitEvent: false });
+    input.value = value;
+    input.setSelectionRange(Math.min(cursor, value.length), Math.min(cursor, value.length));
   }
 
-  formatExpiry(): void {
-    const value = this.form.controls.expiry.value;
-    if (/^\d{4}$/.test(value))
-      this.form.controls.expiry.setValue(`${value.slice(0, 2)}/${value.slice(2)}`);
+  deleteAtSeparator(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const cursor = input.selectionStart;
+    if (!event.cancelable || cursor === null || cursor !== input.selectionEnd) return;
+    const inputType = (event as InputEvent).inputType;
+    const backward =
+      inputType === 'deleteContentBackward' && /[ /]/.test(input.value.charAt(cursor - 1));
+    const forward = inputType === 'deleteContentForward' && /[ /]/.test(input.value.charAt(cursor));
+    if (!backward && !forward) return;
+
+    event.preventDefault();
+    input.setRangeText(
+      '',
+      backward ? Math.max(0, cursor - 2) : cursor,
+      backward ? cursor : cursor + 2,
+      'start',
+    );
+    input.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
   submit(): void {
